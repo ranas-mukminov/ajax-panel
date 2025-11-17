@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+yarn-error.log
+npm-debug.log*
+
+# Build outputs
+dist/
+coverage/
+
+# Git
+.git/
+.gitignore
+.github/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Documentation (will be copied separately if needed)
+*.md
+
+# CI/CD
+.gitlab-ci.yml
