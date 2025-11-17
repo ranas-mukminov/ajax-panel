@@ -9,12 +9,14 @@ WORKDIR /build
 COPY package.json yarn.lock ./
 
 # Install dependencies
-RUN yarn install --frozen-lockfile --network-timeout 100000
+RUN yarn config set strict-ssl false && \
+    yarn install --frozen-lockfile --network-timeout 100000
 
-# Copy source code
+# Copy source code and metadata files
 COPY src/ ./src/
 COPY static/ ./static/
 COPY tsconfig.json .prettierrc.js jest.config.js ./
+COPY README.md LICENSE CHANGELOG.md ./
 
 # Build the plugin
 # Note: Need --openssl-legacy-provider for Node 20 compatibility with older webpack
@@ -28,17 +30,15 @@ FROM grafana/grafana:10.4.0
 # Switch to root to install plugin
 USER root
 
-# Create plugin directory
+# Create plugin directory and copy built plugin from builder stage
 RUN mkdir -p /var/lib/grafana/plugins/ryantxu-ajax-panel
-
-# Copy built plugin from builder stage
 COPY --from=builder /build/dist/ /var/lib/grafana/plugins/ryantxu-ajax-panel/
 
-# Set proper permissions
-RUN chown -R grafana:grafana /var/lib/grafana/plugins/ryantxu-ajax-panel
+# Set proper permissions (grafana user is uid 472)
+RUN chown -R 472:0 /var/lib/grafana/plugins/ryantxu-ajax-panel
 
 # Switch back to grafana user
-USER grafana
+USER 472
 
 # Set environment variables for Grafana configuration
 ENV GF_SECURITY_ADMIN_USER=admin

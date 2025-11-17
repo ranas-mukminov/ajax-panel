@@ -28,8 +28,10 @@ tmp/
 temp/
 *.tmp
 
-# Documentation (will be copied separately if needed)
-*.md
-
 # CI/CD
 .gitlab-ci.yml
+
+# Keep these docs (they are needed by grafana-toolkit build)
+!README.md
+!LICENSE
+!CHANGELOG.md
