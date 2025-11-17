@@ -1,14 +1,16 @@
-# AJAX Panel for Grafana (fork by run-as-daemon.ru)
+# AJAX Panel Plugin for Grafana (run-as-daemon fork)
 
-Production-ready Grafana panel plugin for loading external content via AJAX (GET/POST) or iframe into your dashboards.
+**Production-ready Grafana panel plugin with Docker support** — Load external HTTP content (GET/POST/iframe) directly into your Grafana dashboards.
 
 [English] | [Русский](README.ru.md)
 
-## Overview
+## What is This?
 
 The AJAX Panel plugin provides a flexible way to load and display external content directly in Grafana dashboards. Whether you need to integrate third-party APIs, embed status pages, or display custom HTML/JSON responses, this plugin makes it possible without leaving your monitoring environment.
 
-Typical use cases include:
+**This repository includes a production-ready Docker setup** that provides a complete Grafana instance with the AJAX Panel plugin pre-installed and configured.
+
+### Typical Use Cases
 
 - Embedding external status pages or monitoring dashboards
 - Calling REST APIs and displaying the response in various formats
@@ -38,7 +40,81 @@ The AJAX Panel operates as follows:
 4. Template variables and dashboard context (time range, interval) are automatically available for use in requests
 5. The rendered content updates dynamically within the panel
 
-## Installation
+## Production Docker Image (Quick Start)
+
+This repository includes a **multi-stage Dockerfile** that builds a complete Grafana image with the AJAX Panel plugin pre-installed. This is the recommended way to run the plugin in production or development environments.
+
+### Prerequisites
+
+- Docker (20.10+)
+- Docker Compose (2.0+)
+
+### Quick Start with Docker Compose
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/ranas-mukminov/ajax-panel.git
+   cd ajax-panel
+   ```
+
+2. Start the services:
+   ```bash
+   docker compose up -d
+   ```
+
+3. Open your browser and navigate to `http://localhost:3000`
+
+4. Log in with default credentials:
+   - **Username**: `admin`
+   - **Password**: `admin`
+
+5. Create a new dashboard and add an **AJAX** panel
+
+6. Try the demo backend endpoints:
+   - Text response: `http://ajax-demo-backend:8080/api/demo/text`
+   - JSON response: `http://ajax-demo-backend:8080/api/demo/json`
+
+The setup includes:
+- **grafana-ajax**: Grafana 10.4.0 with AJAX Panel plugin pre-installed
+- **ajax-demo-backend**: A simple demo HTTP server for testing the panel
+
+### Manual Docker Build and Run
+
+Build the image:
+```bash
+docker build -t ajax-panel-grafana .
+```
+
+Run the container:
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e GF_SECURITY_ADMIN_PASSWORD=admin \
+  --name grafana-ajax \
+  ajax-panel-grafana
+```
+
+### Using Pre-built Images from GitHub Container Registry
+
+Images are automatically built and published on every release:
+
+```bash
+docker pull ghcr.io/ranas-mukminov/ajax-panel:latest
+docker run -d -p 3000:3000 ghcr.io/ranas-mukminov/ajax-panel:latest
+```
+
+### Demo Backend
+
+The `ajax-demo-backend` service is an optional demonstration server that provides sample endpoints for testing the AJAX panel:
+
+**Available endpoints:**
+- `http://ajax-demo-backend:8080/api/demo/text` — Returns plain text with server time
+- `http://ajax-demo-backend:8080/api/demo/json` — Returns JSON with timestamp and random data
+- `http://ajax-demo-backend:8080/health` — Health check endpoint
+
+**Note**: When running outside Docker Compose, use `http://localhost:8080/...` instead.
+
+## Traditional Installation (Without Docker)
 
 ### Option 1: Install from Plugin Directory
 
@@ -190,9 +266,52 @@ This plugin is based on the original `ryantxu/ajax-panel` and has been used with
 
 If you encounter issues with specific Grafana versions, please report them in the repository issues.
 
-## Fork Maintainer
+## Fork Maintainer & Professional Services
 
-This fork is maintained by **Ranas Mukminov** for internal and client projects. Ranas specializes in monitoring infrastructure setup and optimization, including Grafana, Zabbix, and Prometheus implementations. For professional services or custom plugin development, visit [run-as-daemon.ru](https://run-as-daemon.ru).
+This fork is maintained by **Ranas Mukminov** and the **run-as-daemon** team.
+
+### About run-as-daemon
+
+**run-as-daemon** ([https://run-as-daemon.ru](https://run-as-daemon.ru)) is a professional SRE and DevOps consultancy specializing in production monitoring infrastructure, containerization, and operational excellence.
+
+### Professional Services We Offer
+
+Our team provides enterprise-grade services for organizations seeking reliable monitoring and infrastructure solutions:
+
+1. **Grafana Monitoring Stack Design & Deployment**
+   - Custom dashboard development and plugin integration
+   - Multi-tenant Grafana setups with authentication/authorization
+   - High-availability Grafana clusters
+   - Grafana Cloud migration and optimization
+
+2. **Custom Plugin Development & Integration**
+   - Bespoke Grafana panel, data source, and app plugins
+   - Plugin maintenance, updates, and security hardening
+   - Integration with proprietary APIs and internal systems
+   - Performance optimization for high-load scenarios
+
+3. **Docker & Kubernetes Infrastructure**
+   - Container orchestration for monitoring stacks
+   - CI/CD pipelines for infrastructure as code
+   - Security hardening and compliance (CIS benchmarks)
+   - Resource optimization and cost reduction
+
+4. **SRE Practices & Operational Excellence**
+   - SLI/SLO/SLA definition and implementation
+   - Alerting strategy design and alert fatigue reduction
+   - Incident response procedures and runbooks
+   - On-call rotation setup and training
+   - Observability best practices (logs, metrics, traces)
+
+5. **Monitoring Integration & Migration**
+   - Prometheus, Zabbix, InfluxDB, and other data source integrations
+   - Legacy monitoring system migrations
+   - Multi-cloud and hybrid infrastructure monitoring
+   - Cost-effective monitoring architecture
+
+**Contact us**: [https://run-as-daemon.ru](https://run-as-daemon.ru)
+
+---
 
 ## Development
 
@@ -237,3 +356,23 @@ Original author: **Ryan McKinley** ([ryantxu/ajax-panel](https://github.com/ryan
 Fork maintainer: **Ranas Mukminov** ([ranas-mukminov/ajax-panel](https://github.com/ranas-mukminov/ajax-panel))
 
 See the [LICENSE](LICENSE) file for details.
+
+## Support & Contributions
+
+### Supporting This Project
+
+If you find this plugin useful:
+- ⭐ **Star this repository** on GitHub
+- 🔄 **Share it** with your team and network
+- 🐛 **Report issues** or **submit pull requests**
+- 💰 Consider supporting via [GitHub Sponsors](https://github.com/sponsors/ranas-mukminov) (if available)
+
+### Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes with tests
+4. Submit a pull request
+
+For major changes, please open an issue first to discuss your proposed changes.
